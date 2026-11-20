@@ -1,0 +1,25 @@
+# --- Django / Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# --- Database / local data ---
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+
+# --- Environment ---
+.env
+
+# --- Static / collected files ---
+staticfiles/
+media/
+
+# --- Tooling ---
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
