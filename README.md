@@ -1,69 +1,30 @@
-# TechnoLearn — Course Marketplace
+# TechnoLearn
 
-A modern, responsive online learning platform focused on **practical, project-based
-AI education**. This repository currently implements the **Courses Page** (listing,
-search, category filtering, pagination, and course detail) backed by a Django REST
-Framework API.
+TechnoLearn is a Persian, RTL learning catalog focused on practical, project-based AI skills. The homepage and course catalog share React components and use the existing Django REST API. The pre-existing read-only course-detail API remains available for compatibility; the frontend intentionally exposes only the home and catalog pages.
 
-## Tech stack
+## Stack and structure
 
-| Layer    | Technology                                              |
-| -------- | ------------------------------------------------------- |
-| Frontend | React (JS), Vite, Tailwind CSS, React Router, Axios, TanStack Query, Lucide React |
-| Backend  | Python, Django, Django REST Framework, SQLite           |
+- `frontend/`: React (JavaScript), Vite, Tailwind CSS, React Router, Axios, TanStack Query and Lucide. `src/pages` contains the two pages, `src/components` the shared UI, `src/hooks` the queries, and `src/api` the API client.
+- `backend/`: Django, Django REST Framework and SQLite. The `courses` app owns models, serializers, views, migrations, admin, sample data and tests.
 
-## Project structure
+The frontend uses a relative `/api` URL and Vite proxies it to Django (`VITE_PROXY_TARGET` can override the development proxy). For deployments, configure the web server to route `/api/` to Django. Set backend environment variables as described in `backend/.env.example`; do not use development defaults in production.
 
-```
-.
-├── backend/                     # Django REST API
-│   ├── config/                  # Django project (settings, urls, wsgi, asgi)
-│   ├── courses/                 # Courses app
-│   │   ├── models.py            # Category & Course models
-│   │   ├── serializers.py
-│   │   ├── views.py             # List/detail views with search + filtering
-│   │   ├── pagination.py
-│   │   ├── urls.py
-│   │   ├── admin.py
-│   │   ├── management/commands/seed_courses.py
-│   │   ├── migrations/
-│   │   └── tests/
-│   ├── manage.py
-│   └── requirements.txt
-└── frontend/                    # React + Vite app
-    ├── public/
-    └── src/
-        ├── api/                 # Axios client + TanStack query client
-        ├── hooks/               # useCategories, useCourses, useCourse
-        ├── components/          # Header, HeroSection, CourseSearch, CategoryFilter,
-        │                        # CourseGrid, CourseCard, EmptyState, Pagination, Footer
-        ├── pages/               # CoursesPage, CourseDetailPage
-        └── utils/               # formatting helpers
-```
+## API
 
-## API endpoints
+- `GET /api/categories/`: categories and published course counts.
+- `GET /api/courses/`: published courses only. Supports `search` (title, short description, instructor or category), `category` (slug), `sort` (`newest`, `popular`, `price_asc`, `price_desc`), `page` and `page_size` (maximum 50). Responses use DRF's `count`, `next`, `previous`, and `results` pagination shape.
+- `GET /api/courses/{slug}/`: existing published-course endpoint.
 
-| Method | Path                   | Description                                  |
-| ------ | ---------------------- | -------------------------------------------- |
-| GET    | `/api/categories/`     | List all categories                          |
-| GET    | `/api/courses/`        | List published courses (search + filter + pagination) |
-| GET    | `/api/courses/{slug}/` | Retrieve a single published course by slug   |
+Popularity means highest rating, with unrated courses last; no enrollment data is collected. Price ordering uses the discount price when it is lower than the regular price. Prices are in **Iranian toman**. The demo seed uses illustrative prices, not currency conversions or real offers; existing database prices should be reviewed when upgrading from the earlier dollar-denominated demo.
 
-The `/api/courses/` endpoint supports:
+## Local setup
 
-- `?search=<term>` — case-insensitive title search
-- `?category=<slug>` — filter by category
-- `?page=<n>` and `?page_size=<n>` — pagination
-
-Only courses with `status = "published"` are exposed in public responses.
-
-## Getting started
-
-### Backend
+The commands below are provided for the project owner to run, not executed by the agent.
 
 ```bash
 cd backend
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
 python manage.py migrate
@@ -71,7 +32,7 @@ python manage.py seed_courses
 python manage.py runserver
 ```
 
-### Frontend
+In another terminal:
 
 ```bash
 cd frontend
@@ -80,19 +41,4 @@ npm install
 npm run dev
 ```
 
-The frontend uses a relative `/api` base URL and the Vite dev server proxies
-`/api` requests to `http://127.0.0.1:8000` (override with `VITE_PROXY_TARGET`).
-No hardcoded API hosts are used; the base URL is configurable via
-`VITE_API_BASE_URL`.
-
-## Development
-
-- Backend tests: `cd backend && python manage.py test`
-- Frontend build: `cd frontend && npm run build`
-
-## Scope
-
-This implementation covers the Courses Page only. The architecture (API-first,
-TanStack Query server-state, route-based pages) is structured so authentication,
-payments, dashboards, and lesson players can be added later without major
-restructuring.
+The seed command updates sample records identified by their existing slugs; it does not delete other records. It overwrites fields of those sample records when rerun. Run backend tests with `python manage.py test` from `backend/` and build the frontend with `npm run build` from `frontend/`.

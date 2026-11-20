@@ -1,75 +1,11 @@
 import { useCategories } from "../hooks/useCategories.js";
 
-function SkeletonChips() {
-  return (
-    <div className="flex flex-wrap gap-2" aria-hidden="true">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div
-          key={i}
-          className="h-9 w-32 animate-pulse rounded-full bg-slate-200/80"
-        />
-      ))}
-    </div>
-  );
-}
-
-/**
- * Horizontal category filter. Categories are loaded dynamically from the
- * backend. Renders an "All Courses" chip plus one chip per category.
- *
- * Props:
- *  - activeCategory: slug of the active category, or null for "All Courses"
- *  - onSelect: called with the chosen slug, or null for "All Courses"
- */
 export default function CategoryFilter({ activeCategory, onSelect }) {
-  const { data: categories, isLoading, isError } = useCategories();
-
-  return (
-    <div>
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-display text-sm font-semibold uppercase tracking-wider text-slate-500">
-          Browse by category
-        </h2>
-      </div>
-
-      {isLoading ? (
-        <SkeletonChips />
-      ) : isError ? (
-        <p className="text-sm text-slate-500">Categories are unavailable right now.</p>
-      ) : (
-        <div className="flex flex-wrap gap-2">
-          <Chip
-            label="All Courses"
-            active={!activeCategory}
-            onClick={() => onSelect?.(null)}
-          />
-          {categories.map((category) => (
-            <Chip
-              key={category.slug}
-              label={category.name}
-              active={activeCategory === category.slug}
-              onClick={() => onSelect?.(category.slug)}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Chip({ label, active, onClick }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        "rounded-full border px-4 py-2 text-sm font-medium transition-all",
-        active
-          ? "border-transparent bg-gradient-to-r from-navy-600 to-brand-600 text-white shadow-sm"
-          : "border-slate-200 bg-white text-slate-600 hover:border-navy-300 hover:text-navy-700",
-      ].join(" ")}
-    >
-      {label}
-    </button>
-  );
+  const { data = [], isLoading, isError, refetch } = useCategories();
+  return <div className="category-filter"><h2>دسته‌بندی دوره‌ها</h2>
+    {isLoading ? <p className="muted">در حال دریافت دسته‌بندی‌ها...</p> : isError ? <p className="muted">دسته‌بندی‌ها دریافت نشدند. <button className="text-link" onClick={() => refetch()}>تلاش دوباره</button></p> : <div className="filter-chips">
+      <button type="button" aria-pressed={!activeCategory} className={!activeCategory ? "active" : ""} onClick={() => onSelect(null)}>همه دوره‌ها</button>
+      {data.map((item) => <button type="button" aria-pressed={activeCategory === item.slug} className={activeCategory === item.slug ? "active" : ""} key={item.slug} onClick={() => onSelect(item.slug)}>{item.name}</button>)}
+    </div>}
+  </div>;
 }

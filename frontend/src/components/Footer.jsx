@@ -1,21 +1,11 @@
-import { GraduationCap } from "lucide-react";
+import { ArrowUpLeft, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
-  return (
-    <footer className="border-t border-slate-200 bg-white">
-      <div className="container-page flex flex-col items-center justify-between gap-4 py-8 sm:flex-row">
-        <div className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-navy-600 to-brand-600 text-white">
-            <GraduationCap className="h-5 w-5" />
-          </span>
-          <span className="font-display font-bold text-slate-900">
-            Techno<span className="gradient-text">Learn</span>
-          </span>
-        </div>
-        <p className="text-sm text-slate-500">
-          © {new Date().getFullYear()} TechnoLearn. Practical AI education.
-        </p>
-      </div>
-    </footer>
-  );
+  return <footer className="site-footer"><div className="container-page">
+    <div className="footer-main"><div><Link className="brand footer-brand" to="/"><span className="brand-mark"><Sparkles size={21} /></span><span dir="ltr">techno<span>learn.</span></span></Link><p>اینجا ایده‌ها با هوش مصنوعی به واقعیت تبدیل می‌شوند. یاد بگیر، تجربه کن و بساز.</p></div>
+      <div><h3>دسترسی سریع</h3><Link to="/">صفحه اصلی</Link><Link to="/courses">همه دوره‌ها</Link><Link to="/#categories">دسته‌بندی‌ها</Link></div>
+      <div><h3>مسیر یادگیری</h3><p>آموزش‌های کاربردی برای دنیایی که هر روز در حال تغییر است.</p><Link className="footer-link" to="/courses">کاوش دوره‌ها <ArrowUpLeft size={16} /></Link></div></div>
+    <div className="footer-bottom"><span>© {new Intl.NumberFormat("fa-IR", {useGrouping:false}).format(new Date().getFullYear())} تکنولرن. همه حقوق محفوظ است.</span><span dir="ltr">Made for curious minds ✳</span></div>
+  </div></footer>;
 }
