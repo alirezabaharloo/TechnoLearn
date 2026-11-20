@@ -83,7 +83,7 @@ export default function CoursesPage() {
   const results = data?.results ?? [];
   const total = data?.count ?? 0;
   const categoryName =
-    category && categories?.find((c) => c.slug === category)?.name ?? null;
+    (category && categories?.find((c) => c.slug === category)?.name) ?? null;
 
   const heading = search
     ? `Results for “${search}”`
