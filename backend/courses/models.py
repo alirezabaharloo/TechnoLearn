@@ -32,7 +32,11 @@ class Course(models.Model):
         Category, on_delete=models.CASCADE, related_name="courses"
     )
     instructor_name = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    # Prices are stored in Iranian toman.
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    discount_price = models.DecimalField(
+        max_digits=12, decimal_places=2, null=True, blank=True
+    )
     duration = models.CharField(max_length=50, blank=True, default="")
     lesson_count = models.PositiveIntegerField(default=0)
     rating = models.DecimalField(

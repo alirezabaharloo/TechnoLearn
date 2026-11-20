@@ -18,6 +18,7 @@ class CourseAdmin(admin.ModelAdmin):
         "category",
         "instructor_name",
         "price",
+        "discount_price",
         "lesson_count",
         "rating",
         "status",

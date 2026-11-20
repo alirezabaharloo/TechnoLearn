@@ -304,6 +304,39 @@ COURSES = [
 ]
 
 
+# Localized demo content. Prices in the original sample were dollar-like values;
+# these demo prices are explicitly converted to toman, not real exchange rates.
+CATEGORY_NAMES = {
+    "motion-graphics": "موشن گرافیک",
+    "video-production": "تولید ویدیو",
+    "programming": "برنامه‌نویسی",
+    "graphic-design": "طراحی گرافیک",
+    "content-creation": "تولید محتوا",
+}
+COURSE_TITLES = [
+    "ساخت موشن گرافیک با ابزارهای رایگان هوش مصنوعی",
+    "تولید ویدیو با هوش مصنوعی؛ از ایده تا انتشار",
+    "برنامه‌نویسی با ایجنت‌های هوش مصنوعی",
+    "طراحی گرافیک و محتوای دیجیتال با هوش مصنوعی",
+    "تولید محتوا با هوش مصنوعی؛ برنامه‌ریزی تا انتشار",
+    "ساخت ویدیوهای توضیحی متحرک با ابزارهای رایگان",
+    "تدوین ویدیو با هوش مصنوعی: جریان‌های کاری کاربردی",
+    "ساخت و توسعه کد با دستیارهای هوش مصنوعی",
+    "طراحی هویت بصری برند با هوش مصنوعی",
+    "تولید محتوای شبکه‌های اجتماعی با هوش مصنوعی",
+    "تایپوگرافی متحرک و ساخت تیتراژ",
+    "ساخت فیلم کوتاه سینمایی با ابزارهای هوش مصنوعی",
+    "طراحی رابط وب با ابزارهای هوش مصنوعی",
+    "تست و بازآرایی کد با کمک هوش مصنوعی",
+    "استراتژی محتوای بلند با هوش مصنوعی",
+]
+INSTRUCTOR_NAMES = {
+    "Elena Rossi": "النا روسی", "Marcus Bennett": "مارکوس بنت",
+    "Priya Nair": "پریا نایر", "Sofia Alvarez": "سوفیا آلوارز",
+    "Daniel Okafor": "دنیل اوکافور",
+}
+
+
 class Command(BaseCommand):
     help = "Seed the database with sample categories and courses."
 
@@ -312,21 +345,21 @@ class Command(BaseCommand):
         categories = {}
         for data in CATEGORIES:
             category, _ = Category.objects.update_or_create(
-                slug=data["slug"], defaults={"name": data["name"], "description": data["description"]}
+                slug=data["slug"], defaults={"name": CATEGORY_NAMES[data["slug"]], "description": data["description"]}
             )
             categories[data["slug"]] = category
 
-        for data in COURSES:
+        for data, title in zip(COURSES, COURSE_TITLES):
             course, _ = Course.objects.update_or_create(
                 slug=data["slug"],
                 defaults={
-                    "title": data["title"],
+                    "title": title,
                     "description": data["description"],
-                    "short_description": data["short_description"],
+                    "short_description": "با یک مسیر پروژه‌محور، ایده‌هایت را با کمک هوش مصنوعی به نتیجه‌ای واقعی تبدیل کن.",
                     "thumbnail": data["thumbnail"],
                     "category": categories[data["category"]],
-                    "instructor_name": data["instructor_name"],
-                    "price": data["price"],
+                    "instructor_name": INSTRUCTOR_NAMES[data["instructor_name"]],
+                    "price": data["price"] * 10000,
                     "duration": data["duration"],
                     "lesson_count": data["lesson_count"],
                     "rating": data["rating"],
